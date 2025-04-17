@@ -1,7 +1,3 @@
-using System;
-using System.Numerics;
-using System.Security.Cryptography;
-
 class RSAKeyGen
 {
     static void Main()
