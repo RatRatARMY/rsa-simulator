@@ -3,14 +3,14 @@ class RSAKeyGen
     static void Main()
     {
         Console.Write("Nhập số nguyên tố p: ");
-        if (!ulong.TryParse(Console.ReadLine(), out ulong p) || !IsPrime(p))
+        if (!BigInteger.TryParse(Console.ReadLine(), out BigInteger p) || !IsPrime(p))
         {
             Console.WriteLine("❌ p không hợp lệ hoặc không phải số nguyên tố.");
             return;
         }
 
         Console.Write("Nhập số nguyên tố q: ");
-        if (!ulong.TryParse(Console.ReadLine(), out ulong q) || !IsPrime(q))
+        if (!BigInteger.TryParse(Console.ReadLine(), out BigInteger q) || !IsPrime(q))
         {
             Console.WriteLine("❌ q không hợp lệ hoặc không phải số nguyên tố.");
             return;
@@ -41,7 +41,7 @@ class RSAKeyGen
         }
 
         // Bước 2: Tính n = p × q
-        BigInteger n = (BigInteger)p * q;
+        BigInteger n = p * q;
 
         // Bước 3: Tính λ(n) = BCNN(p - 1, q - 1) (bội chung nhỏ nhất)
         BigInteger lambda = BoiChungNhoNhat(p - 1, q - 1);
@@ -67,13 +67,13 @@ class RSAKeyGen
         Console.WriteLine($"d = {d}");
     }
 
-    static bool IsPrime(ulong number)
+    static bool IsPrime(BigInteger number)
     {
         if (number < 2) return false;
         if (number == 2 || number == 3) return true;
         if (number % 2 == 0) return false;
-        ulong limit = (ulong)Math.Sqrt(number);
-        for (ulong i = 3; i <= limit; i += 2)
+        BigInteger limit = Sqrt(number);
+        for (BigInteger i = 3; i <= limit; i += 2)
         {
             if (number % i == 0) return false;
         }
@@ -139,5 +139,22 @@ class RSAKeyGen
         }
 
         return -1; // Không tìm được giá trị phù hợp
+    }
+    static BigInteger Sqrt(BigInteger n)
+    {
+        if (n < 0) throw new ArgumentException("Căn bậc hai không áp dụng cho số âm");
+
+        if (n == 0 || n == 1) return n;
+
+        BigInteger x = n / 2;
+        BigInteger lastX = 0;
+
+        while (x != lastX)
+        {
+            lastX = x;
+            x = (x + n / x) / 2;
+        }
+
+        return x;
     }
 }
